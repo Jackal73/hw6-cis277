@@ -1,8 +1,8 @@
 // TODO: IMPORT DATA FROM DATA.JS.
 // I am importing data from data.js, and naming it 'data'.
-import data from "./data.js";
-
+import express from "express";
 import { promises as fs } from "fs";
+import data from "./data.js";
 
 // TODO: WHICH VEHICLE HAS THE HIGHEST MILEAGE?
 
@@ -81,3 +81,20 @@ const totalMileageIL = data
   }, 0);
 
 fs.writeFile("./total-mileage-illinois.json", JSON.stringify(totalMileageIL));
+
+// Express
+const app = express();
+// Basic dynamic routing
+app.get("/:page", (req, res) => {
+  fs.readFile(`${req.params.page}.json`, "utf-8")
+    .then((contents) => {
+      res.json(contents);
+    })
+    .catch(() => {
+      res.statusCode = 404;
+      res.end("404!");
+    });
+});
+app.listen(3000, () => {
+  console.info("Server running");
+});
